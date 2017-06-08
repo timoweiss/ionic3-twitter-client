@@ -9,7 +9,7 @@ import { NavController, IonicPage } from 'ionic-angular';
 export class AboutPage {
 
   constructor(public navCtrl: NavController) {
-
+    console.log('about ctrl')
   }
 
 }
