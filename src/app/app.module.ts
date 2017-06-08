@@ -8,6 +8,10 @@ import { MyApp } from './app.component';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 
+// Services
+
+import { TwitterService } from '../services/twitter.service';
+
 @NgModule({
   declarations: [
     MyApp
@@ -24,6 +28,7 @@ import { SplashScreen } from '@ionic-native/splash-screen';
   providers: [
     StatusBar,
     SplashScreen,
+    TwitterService,
     {provide: ErrorHandler, useClass: IonicErrorHandler}
   ]
 })
