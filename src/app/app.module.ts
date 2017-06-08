@@ -29,7 +29,7 @@ import { TwitterService } from '../services/twitter.service';
     StatusBar,
     SplashScreen,
     TwitterService,
-    {provide: ErrorHandler, useClass: IonicErrorHandler}
+    { provide: ErrorHandler, useClass: IonicErrorHandler }
   ]
 })
-export class AppModule {}
+export class AppModule { }
