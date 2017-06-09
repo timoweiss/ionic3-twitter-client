@@ -1,6 +1,7 @@
+<ion-searchbar (ionInput)="searchFn($event)"></ion-searchbar>
 <ion-list>
     <div class="new-tweets-indicator" *ngIf="tweetBuffer.length > 0;" (click)="flushBuffer()">There are {{tweetBuffer.length}} new tweets available</div>
-    <ion-item *ngFor="let tweet of _tweets" (click)="showDetail(tweet)">
+    <ion-item *ngFor="let tweet of _tweets | search: term" (click)="showDetail(tweet)">
         <ion-avatar item-start>
             <img src="{{tweet.user.profile_image_url_https}}">
         </ion-avatar>

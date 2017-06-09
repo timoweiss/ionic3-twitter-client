@@ -26,6 +26,7 @@ export class TweetList implements OnInit, OnChanges {
     private isLoading: boolean = false;
 
     private targetTop: any;
+    private term: string = '';
 
     constructor(public navCtrl: NavController, public myElement: ElementRef) {
 
@@ -88,6 +89,10 @@ export class TweetList implements OnInit, OnChanges {
         return more
             .toPromise()
             .then(newTweets => this._tweets = [...this._tweets, ...newTweets]);
+    }
+
+    public searchFn(input) {
+        this.term = input.target.value
     }
 
 }
