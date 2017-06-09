@@ -1,0 +1,7 @@
+<ion-list>
+    <div *ngIf="tweetBuffer.length > 0;" (click)="flushBuffer()">There are {{tweetBuffer.length}} new tweets available</div>
+    <button ion-item *ngFor="let tweet of _tweets" (click)="showDetail(tweet)">
+        <span>{{ tweet.text }}</span>
+    </button>
+    <ion-spinner *ngIf="isLoading"></ion-spinner>
+</ion-list>
