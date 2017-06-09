@@ -73,10 +73,13 @@ export class TwitterService {
         const s = `https://api.twitter.com/1.1/search/tweets.json?q=${encodeURIComponent(phrase)}`;
         return this.http.get(s, { headers: this.getHeadersWithAccessToken() })
             .map(res => res.json())
-            .map((data: ISearchResult) => {
+            .map((data: ISearchResult) => data);
+    }
 
-                return data;
-            });
+    searchNext(nextPath: string) {
+        return this.http.get(`https://api.twitter.com/1.1/search/tweets.json${nextPath}`, { headers: this.getHeadersWithAccessToken() })
+            .map(res => res.json())
+            .map((data: ISearchResult) => data);
     }
 
     private getHeadersWithAccessToken() {

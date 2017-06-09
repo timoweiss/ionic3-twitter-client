@@ -1,6 +1,6 @@
-import { Component, Input, OnInit, OnChanges, SimpleChange } from '@angular/core';
-import { NavController } from 'ionic-angular';
-
+import { Component, Input, OnInit, OnChanges, SimpleChange, ElementRef } from '@angular/core';
+import { NavController, Content } from 'ionic-angular';
+import 'rxjs/add/operator/toPromise';
 import { IStatus } from '../../services/twitter.service';
 
 @Component({
@@ -13,7 +13,11 @@ export class TweetList implements OnInit, OnChanges {
     private _tweets: Array<IStatus> = [];
 
     @Input()
+    // tslint:disable-next-line
     private tweets: Array<IStatus> = [];
+
+    @Input()
+    private loadMore: Function = () => { };
 
     // buffered tweets, they are loaded but not shown
     private tweetBuffer: Array<IStatus> = [];
@@ -21,17 +25,25 @@ export class TweetList implements OnInit, OnChanges {
     // show loading-indicator
     private isLoading: boolean = false;
 
-    constructor(public navCtrl: NavController) {
+    private targetTop: any;
+
+    constructor(public navCtrl: NavController, public myElement: ElementRef) {
 
     }
 
+    // tslint:disable-next-line
     private flushBuffer() {
         console.log('flushing tweetbuffer')
-        this._tweets = [...this.tweetBuffer, ...this._tweets];
-        this.tweetBuffer = [];
+
+        this.targetTop.scrollIntoView();
+        setTimeout(() => {
+            this._tweets = [...this.tweetBuffer, ...this._tweets];
+            this.tweetBuffer = [];
+        }, 200)
     }
 
     ngOnInit() {
+        this.targetTop = this.myElement.nativeElement;
         this.isLoading = true;
     }
 
@@ -62,9 +74,20 @@ export class TweetList implements OnInit, OnChanges {
     }
 
 
-    public clearAllTweets() {
+    public clearAllTweets(): void {
         this._tweets = [];
         this.tweetBuffer = [];
+    }
+
+    // tslint:disable-next-line
+    private doInfinite(infiniteScroll): Promise<any> {
+        const more = this.loadMore();
+        if (!more) {
+            return Promise.resolve([]);
+        }
+        return more
+            .toPromise()
+            .then(newTweets => this._tweets = [...this._tweets, ...newTweets]);
     }
 
 }
