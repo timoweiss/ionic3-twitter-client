@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { NavController, IonicPage } from 'ionic-angular';
 
-import { TwitterService, ISearchMetadata, IStatus } from '../../services/twitter.service';
+import { TwitterService, IStatus } from '../../services/twitter.service';
 
 import { TweetList } from '../../components/TweetList/TweetList.component'
 
@@ -16,26 +16,53 @@ export class HomePage implements OnInit {
   @ViewChild(TweetList)
   private tweetListComponent: TweetList;
 
+  private nextTweetsQueryPath: string = null;
+
   constructor(public navCtrl: NavController, private twitterService: TwitterService) {
 
   }
 
   ngOnInit() {
 
+    setTimeout(() => this.tweetListComponent, 10000000)
+
     this.twitterService
       .issueToken()
       .subscribe(() => {
         this.fetchTweets();
-        setInterval(() => this.fetchTweets(), 15000)
+        setInterval(() => this.fetchTweets(false), 10000)
 
       })
 
   }
 
-  fetchTweets() {
+  fetchTweets(updateNextPath: boolean = true) {
     this.twitterService
-      .search()
-      .subscribe(data => this.tweets = data.statuses);
+      .search('#TheresaMay')
+      .subscribe(result => {
+        if (!result.search_metadata.next_results) {
+          console.error('result.search_metadata.next_results empty', result.search_metadata);
+        }
+        this.tweets = result.statuses
+        this.nextTweetsQueryPath = updateNextPath ? result.search_metadata.next_results : this.nextTweetsQueryPath;
+      });
+  }
+
+  // use arrow since fn is called from child-component (this binding)
+  loadMoreTweets = () => {
+    if (!this.nextTweetsQueryPath) {
+      return false;
+    }
+    console.log('calling this.nextTweetsQueryPath', this.nextTweetsQueryPath)
+    return this.twitterService
+      .searchNext(this.nextTweetsQueryPath)
+      .map(result => {
+        if (!result.search_metadata.next_results) {
+          console.error('result.search_metadata.next_results empty', result.search_metadata);
+        }
+        this.nextTweetsQueryPath = result.search_metadata.next_results;
+        return this.nextTweetsQueryPath ? result.statuses : [];
+      });
   }
 
 }
