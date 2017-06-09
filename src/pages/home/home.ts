@@ -24,8 +24,6 @@ export class HomePage implements OnInit {
 
   ngOnInit() {
 
-    setTimeout(() => this.tweetListComponent, 10000000)
-
     this.twitterService
       .issueToken()
       .subscribe(() => {
@@ -62,6 +60,21 @@ export class HomePage implements OnInit {
         }
         this.nextTweetsQueryPath = result.search_metadata.next_results;
         return this.nextTweetsQueryPath ? result.statuses : [];
+      });
+  }
+
+  doRefresh(refresher) {
+    console.log('ptr');
+    this.twitterService.search('#nodejs')
+      .subscribe(result => {
+        if (!result.search_metadata.next_results) {
+          console.error('result.search_metadata.next_results empty', result.search_metadata);
+        }
+        this.tweetListComponent.clearAllTweets();
+        this.tweets = result.statuses
+        this.nextTweetsQueryPath = result.search_metadata.next_results;
+        refresher.complete();
+
       });
   }
 
