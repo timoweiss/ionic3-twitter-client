@@ -1,7 +1,13 @@
 <ion-list>
-    <div *ngIf="tweetBuffer.length > 0;" (click)="flushBuffer()">There are {{tweetBuffer.length}} new tweets available</div>
-    <button ion-item *ngFor="let tweet of _tweets" (click)="showDetail(tweet)">
-        <span>{{ tweet.text }}</span>
-    </button>
+    <div class="new-tweets-indicator" *ngIf="tweetBuffer.length > 0;" (click)="flushBuffer()">There are {{tweetBuffer.length}} new tweets available</div>
+    <ion-item *ngFor="let tweet of _tweets" (click)="showDetail(tweet)">
+        <ion-avatar item-start>
+            <img src="{{tweet.user.profile_image_url_https}}">
+        </ion-avatar>
+        <h2>{{tweet.user.name}}</h2>
+        <h3>{{ tweet.text }}</h3>
+        <p><span *ngIf="tweet.retweet_count">RTs {{ tweet.retweet_count }}</span><span *ngIf="tweet.favorited">Favs {{ tweet.favorite_count }}</span></p>
+    </ion-item>
+
     <ion-spinner *ngIf="isLoading"></ion-spinner>
 </ion-list>
