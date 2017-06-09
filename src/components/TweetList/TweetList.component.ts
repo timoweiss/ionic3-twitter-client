@@ -15,20 +15,17 @@ export class TweetList implements OnInit, OnChanges {
     @Input()
     private tweets: Array<IStatus> = [];
 
-    @Input()
-    private clearall: boolean;
-
     // buffered tweets, they are loaded but not shown
     private tweetBuffer: Array<IStatus> = [];
 
     // show loading-indicator
-    isLoading: boolean = false;
+    private isLoading: boolean = false;
 
     constructor(public navCtrl: NavController) {
 
     }
 
-    flushBuffer() {
+    private flushBuffer() {
         console.log('flushing tweetbuffer')
         this._tweets = [...this.tweetBuffer, ...this._tweets];
         this.tweetBuffer = [];
@@ -42,11 +39,6 @@ export class TweetList implements OnInit, OnChanges {
     ngOnChanges(changes: { [propKey: string]: SimpleChange }) {
 
         this.isLoading = false;
-        console.log({ clearall: changes.clearall })
-
-        if (changes.clearall && !changes.clearall.firstChange) {
-            this.handleClearallChange(changes.clearall);
-        }
 
         if (changes.tweets && !changes.tweets.firstChange) {
             this.handleTweetsChange(changes.tweets);
@@ -69,13 +61,8 @@ export class TweetList implements OnInit, OnChanges {
         this.tweetBuffer = [...newTweetsBuffer, ...this.tweetBuffer]
     }
 
-    private handleClearallChange(clearallChange) {
-        if (clearallChange.currentValue) {
-            this.clearAllTweets();
-        }
-    }
 
-    clearAllTweets() {
+    public clearAllTweets() {
         this._tweets = [];
         this.tweetBuffer = [];
     }
