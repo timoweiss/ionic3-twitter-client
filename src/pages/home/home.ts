@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { NavController, IonicPage } from 'ionic-angular';
 
 import { TwitterService, ISearchMetadata, IStatus } from '../../services/twitter.service';
 
+import { TweetList } from '../../components/TweetList/TweetList.component'
 
 @IonicPage()
 @Component({
@@ -11,6 +12,10 @@ import { TwitterService, ISearchMetadata, IStatus } from '../../services/twitter
 })
 export class HomePage implements OnInit {
   tweets: Array<IStatus> = [];
+
+  @ViewChild(TweetList)
+  private tweetListComponent: TweetList;
+
   constructor(public navCtrl: NavController, private twitterService: TwitterService) {
 
   }
