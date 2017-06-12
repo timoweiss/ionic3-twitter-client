@@ -18,6 +18,8 @@ export class HomePage implements OnInit {
 
   private nextTweetsQueryPath: string = null;
 
+  private searchTerm: string = '#TheresaMay';
+
   constructor(public navCtrl: NavController, private twitterService: TwitterService) {
 
   }
@@ -36,7 +38,7 @@ export class HomePage implements OnInit {
 
   fetchTweets(updateNextPath: boolean = true) {
     this.twitterService
-      .search('#TheresaMay')
+      .search(this.searchTerm)
       .subscribe(result => {
         if (!result.search_metadata.next_results) {
           console.error('result.search_metadata.next_results empty', result.search_metadata);
@@ -65,7 +67,7 @@ export class HomePage implements OnInit {
 
   doRefresh(refresher) {
     console.log('ptr');
-    this.twitterService.search('#nodejs')
+    this.twitterService.search(this.searchTerm)
       .subscribe(result => {
         if (!result.search_metadata.next_results) {
           console.error('result.search_metadata.next_results empty', result.search_metadata);
@@ -75,6 +77,22 @@ export class HomePage implements OnInit {
         this.nextTweetsQueryPath = result.search_metadata.next_results;
         refresher.complete();
 
+      });
+  }
+
+  searchTwitter = (searchTerm: string) => {
+    if (!searchTerm) {
+      return;
+    }
+    this.twitterService.search(searchTerm || '#nodejs')
+      .subscribe(result => {
+        if (!result.search_metadata.next_results) {
+          console.error('result.search_metadata.next_results empty', result.search_metadata);
+        }
+        this.searchTerm = searchTerm;
+        this.tweetListComponent.clearAllTweets();
+        this.tweets = result.statuses
+        this.nextTweetsQueryPath = result.search_metadata.next_results;
       });
   }
 
