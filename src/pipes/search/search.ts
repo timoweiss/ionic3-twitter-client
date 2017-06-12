@@ -12,6 +12,7 @@ import { Pipe, PipeTransform, Injectable } from '@angular/core';
 @Injectable()
 export class SearchPipe implements PipeTransform {
   transform(tweets: Array<any>, searchterm, ignore) {
+    debugger
     if (!searchterm || ignore) {
       return tweets;
     }

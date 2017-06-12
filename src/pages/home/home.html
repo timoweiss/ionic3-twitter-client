@@ -1,12 +1,26 @@
 <ion-header>
   <ion-navbar>
-    <ion-title>Tweets</ion-title>
+    <ion-title>Tweets current search: {{searchTerm}}</ion-title>
   </ion-navbar>
+  <ion-searchbar #searchbar (ionInput)="searchFn($event)" debounce="300" animated=true></ion-searchbar>
 </ion-header>
 
 <ion-content>
+
   <ion-refresher (ionRefresh)="doRefresh($event)">
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
-  <tweet-list [tweets]=tweets [loadMore]=loadMoreTweets [searchTwitter]=searchTwitter></tweet-list>
+
+  <tweet-list [tweetsState]="tweetsState | async" [filter]="term" [searchOnline]></tweet-list>
+
+  <ion-infinite-scroll (ionInfinite)="$event.waitFor(doInfinite())">
+    <ion-infinite-scroll-content></ion-infinite-scroll-content>
+  </ion-infinite-scroll>
+
+  <ion-fab right bottom>
+    <button ion-fab color="light"><ion-icon name="arrow-dropleft"></ion-icon></button>
+    <ion-fab-list side="left">
+      <button ion-fab (click)="toggleSearchOnline($event)"><ion-icon [name]="searchOnline ? 'cloud-done' : 'cloud'"></ion-icon></button>
+    </ion-fab-list>
+  </ion-fab>
 </ion-content>

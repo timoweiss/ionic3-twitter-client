@@ -5,47 +5,58 @@ import { TwitterService, IStatus } from '../../services/twitter.service';
 
 import { TweetList } from '../../components/TweetList/TweetList.component'
 
+
+import { Store } from '@ngrx/store';
+import { TweetState } from '../../reducers/tweetsReducer';
+import { Observable } from 'rxjs/Rx';
+import 'rxjs/add/operator/toPromise';
+
+
 @IonicPage()
 @Component({
   selector: 'page-home',
   templateUrl: 'home.html'
 })
 export class HomePage implements OnInit {
-  tweets: Array<IStatus> = [];
+
 
   @ViewChild(TweetList)
   private tweetListComponent: TweetList;
 
+  @ViewChild('searchbar') searchbarInput;
+
   private nextTweetsQueryPath: string = null;
 
   private searchTerm: string = '#TheresaMay';
+  private tweetsState: Observable<TweetState>;
 
-  constructor(public navCtrl: NavController, private twitterService: TwitterService) {
+  private searchOnline: boolean = false;
 
+  private term: string = '';
+
+  constructor(public navCtrl: NavController, private twitterService: TwitterService, private store: Store<any>) {
+    this.tweetsState = store.select(state => state.tweets);
+
+
+
+    console.log('this.tweetsState', this.tweetsState)
   }
 
   ngOnInit() {
 
+    this.tweetsState.subscribe(tweetsState => {
+      this.searchTerm = tweetsState.searchTerm;
+    })
+
     this.twitterService
       .issueToken()
-      .subscribe(() => {
-        this.fetchTweets();
-        setInterval(() => this.fetchTweets(false), 10000)
-
-      })
-
+      .subscribe(() => this.fetchTweets())
   }
 
   fetchTweets(updateNextPath: boolean = true) {
     this.twitterService
       .search(this.searchTerm)
-      .subscribe(result => {
-        if (!result.search_metadata.next_results) {
-          console.error('result.search_metadata.next_results empty', result.search_metadata);
-        }
-        this.tweets = result.statuses
-        this.nextTweetsQueryPath = updateNextPath ? result.search_metadata.next_results : this.nextTweetsQueryPath;
-      });
+      .subscribe();
   }
 
   /**
@@ -53,38 +64,9 @@ export class HomePage implements OnInit {
    * use arrow since fn is called from child-component (this binding)
    */
   loadMoreTweets = () => {
-    if (!this.nextTweetsQueryPath) {
-      return false;
-    }
-    console.log('calling this.nextTweetsQueryPath', this.nextTweetsQueryPath)
     return this.twitterService
-      .searchNext(this.nextTweetsQueryPath)
-      .map(result => {
-        if (!result.search_metadata.next_results) {
-          console.error('result.search_metadata.next_results empty', result.search_metadata);
-        }
-        this.nextTweetsQueryPath = result.search_metadata.next_results;
-        return this.nextTweetsQueryPath ? result.statuses : [];
-      });
-  }
-
-  /**
-   * pull to refresh callback fn
-   * @param refresher - refresher instance
-   */
-  doRefresh(refresher) {
-    console.log('ptr');
-    this.twitterService.search(this.searchTerm)
-      .subscribe(result => {
-        if (!result.search_metadata.next_results) {
-          console.error('result.search_metadata.next_results empty', result.search_metadata);
-        }
-        this.tweetListComponent.clearAllTweets();
-        this.tweets = result.statuses
-        this.nextTweetsQueryPath = result.search_metadata.next_results;
-        refresher.complete();
-
-      });
+      .searchNext(/*this.nextTweetsQueryPath*/)
+      .toPromise()
   }
 
   /**
@@ -95,15 +77,60 @@ export class HomePage implements OnInit {
       return;
     }
     this.twitterService.search(searchTerm || '#nodejs')
-      .subscribe(result => {
-        if (!result.search_metadata.next_results) {
-          console.error('result.search_metadata.next_results empty', result.search_metadata);
-        }
-        this.searchTerm = searchTerm;
-        this.tweetListComponent.clearAllTweets();
-        this.tweets = result.statuses
-        this.nextTweetsQueryPath = result.search_metadata.next_results;
-      });
+      .subscribe();
   }
+
+  public searchFn(input) {
+
+    this.term = input.target.value;
+
+    if (!this.term || !this.term.length) {
+      return;
+    }
+
+    console.log('searchFn', this.term, { searchOnline: this.searchOnline });
+    if (this.searchOnline) {
+      if (this.term.length <= 3) {
+
+      }
+      return this.searchTwitter(this.term);
+    }
+  }
+
+  public toggleSearchOnline() {
+
+    this.searchOnline = !this.searchOnline;
+
+    if (this.searchOnline) {
+      // TODO: move to reducer/dispatch action
+      // this.tweetListComponent.clearAllTweets();
+      this.searchTwitter(this.searchbarInput.value);
+
+    }
+  }
+
+  // tslint:disable-next-line
+  /**
+   * infinit scroll callback fn
+   */
+  private doInfinite(): Promise<Array<any>> {
+    console.log('doInfinite')
+    return this.loadMoreTweets()
+      .then(result => {
+        console.log('result from infinit received')
+        return result;
+      })
+  }
+
+  /**
+   * pull to refresh callback fn
+   * @param refresher - refresher instance
+   */
+  private doRefresh(refresher) {
+    console.log('ptr');
+    return this.twitterService.search(this.searchTerm)
+      .subscribe(() => refresher.complete());
+  }
+
 
 }
