@@ -11,15 +11,12 @@ import { Pipe, PipeTransform, Injectable } from '@angular/core';
 })
 @Injectable()
 export class SearchPipe implements PipeTransform {
-  /**
-   * Takes a value and makes it lowercase.
-   */
-  transform(tweets: Array<any>, searchterm) {
-    if (!searchterm) {
+  transform(tweets: Array<any>, searchterm, ignore) {
+    if (!searchterm || ignore) {
       return tweets;
     }
-    const filtered = tweets.filter(tweet => tweet.text.includes(searchterm));
-    console.log({ searchterm, filtered })
+    const filtered = tweets.filter(tweet => tweet.text.toLowerCase().includes(searchterm));
+
     return filtered
 
   }
