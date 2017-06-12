@@ -1,7 +1,13 @@
-<ion-searchbar (ionInput)="searchFn($event)"></ion-searchbar>
+<ion-fab right bottom>
+    <button ion-fab color="light"><ion-icon name="arrow-dropleft"></ion-icon></button>
+    <ion-fab-list side="left">
+        <button ion-fab (click)="toggleSearchOnline($event)"><ion-icon [name]="searchOnline ? 'cloud-done' : 'cloud'"></ion-icon></button>
+    </ion-fab-list>
+</ion-fab>
+<ion-searchbar #searchbar (ionInput)="searchFn($event)"></ion-searchbar>
 <ion-list>
     <div class="new-tweets-indicator" *ngIf="tweetBuffer.length > 0;" (click)="flushBuffer()">There are {{tweetBuffer.length}} new tweets available</div>
-    <ion-item *ngFor="let tweet of _tweets | search: term" (click)="showDetail(tweet)">
+    <ion-item *ngFor="let tweet of _tweets | search: term:searchOnline" (click)="showDetail(tweet)">
         <ion-avatar item-start>
             <img src="{{tweet.user.profile_image_url_https}}">
         </ion-avatar>

@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, OnChanges, SimpleChange, ElementRef } from '@angular/core';
+import { Component, Input, OnInit, OnChanges, SimpleChange, ElementRef, ViewChild } from '@angular/core';
 import { NavController, Content } from 'ionic-angular';
 import 'rxjs/add/operator/toPromise';
 import { IStatus } from '../../services/twitter.service';
@@ -19,6 +19,9 @@ export class TweetList implements OnInit, OnChanges {
     @Input()
     private loadMore: Function = () => { };
 
+    @Input() searchTwitter: Function = () => { };
+    @ViewChild('searchbar') searchbarInput;
+
     // buffered tweets, they are loaded but not shown
     private tweetBuffer: Array<IStatus> = [];
 
@@ -27,6 +30,7 @@ export class TweetList implements OnInit, OnChanges {
 
     private targetTop: any;
     private term: string = '';
+    private searchOnline: boolean = false;
 
     constructor(public navCtrl: NavController, public myElement: ElementRef) {
 
@@ -92,7 +96,23 @@ export class TweetList implements OnInit, OnChanges {
     }
 
     public searchFn(input) {
-        this.term = input.target.value
+        this.term = input.target.value;
+
+        console.log('searchFn', this.term, { searchOnline: this.searchOnline });
+        if (this.searchOnline) {
+            return this.searchTwitter(this.term);
+        }
+    }
+
+    public toggleSearchOnline() {
+
+        this.searchOnline = !this.searchOnline;
+
+        if (this.searchOnline) {
+            this.clearAllTweets();
+            this.searchTwitter(this.searchbarInput.value);
+
+        }
     }
 
 }
