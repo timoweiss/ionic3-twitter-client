@@ -48,7 +48,10 @@ export class HomePage implements OnInit {
       });
   }
 
-  // use arrow since fn is called from child-component (this binding)
+  /**
+   * fn to load more tweets based on prev search
+   * use arrow since fn is called from child-component (this binding)
+   */
   loadMoreTweets = () => {
     if (!this.nextTweetsQueryPath) {
       return false;
@@ -65,6 +68,10 @@ export class HomePage implements OnInit {
       });
   }
 
+  /**
+   * pull to refresh callback fn
+   * @param refresher - refresher instance
+   */
   doRefresh(refresher) {
     console.log('ptr');
     this.twitterService.search(this.searchTerm)
@@ -80,6 +87,9 @@ export class HomePage implements OnInit {
       });
   }
 
+  /**
+   * fn to perform an online search
+   */
   searchTwitter = (searchTerm: string) => {
     if (!searchTerm) {
       return;
