@@ -46,7 +46,6 @@ export function tweetsReducer(state = initialState, action: Action) {
         }
 
         case RECEIVE_NEXT_TWEETS: {
-            debugger
             return {
                 ...state,
                 tweets: [...state.tweets, ...action.payload.tweets],
@@ -56,7 +55,7 @@ export function tweetsReducer(state = initialState, action: Action) {
 
 
         case RESET_TWEETS:
-            return { ...state, ...initialState };
+            return { ...state, ...initialState, searchTerm: state.searchTerm };
 
         default:
             return state;
