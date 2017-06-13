@@ -1,10 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { NavController, IonicPage } from 'ionic-angular';
 
-import { TwitterService, IStatus } from '../../services/twitter.service';
-
-import { TweetList } from '../../components/TweetList/TweetList.component'
-
+import { TwitterService } from '../../services/twitter.service';
 
 import { Store } from '@ngrx/store';
 import { TweetState } from '../../reducers/tweetsReducer';
@@ -20,12 +17,7 @@ import 'rxjs/add/operator/toPromise';
 export class HomePage implements OnInit {
 
 
-  @ViewChild(TweetList)
-  private tweetListComponent: TweetList;
-
   @ViewChild('searchbar') searchbarInput;
-
-  private nextTweetsQueryPath: string = null;
 
   private searchTerm: string = '#TheresaMay';
   private tweetsState: Observable<TweetState>;
@@ -36,9 +28,6 @@ export class HomePage implements OnInit {
 
   constructor(public navCtrl: NavController, private twitterService: TwitterService, private store: Store<any>) {
     this.tweetsState = store.select(state => state.tweets);
-
-
-
     console.log('this.tweetsState', this.tweetsState)
   }
 
@@ -109,10 +98,11 @@ export class HomePage implements OnInit {
     }
   }
 
-  // tslint:disable-next-line
+
   /**
    * infinit scroll callback fn
    */
+  // tslint:disable-next-line
   private doInfinite(): Promise<Array<any>> {
     console.log('doInfinite')
     return this.loadMoreTweets()
@@ -126,6 +116,7 @@ export class HomePage implements OnInit {
    * pull to refresh callback fn
    * @param refresher - refresher instance
    */
+  // tslint:disable-next-line
   private doRefresh(refresher) {
     console.log('ptr');
     return this.twitterService.search(this.searchTerm)
