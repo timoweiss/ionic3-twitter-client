@@ -13,7 +13,8 @@ import {
 import { Http, Headers } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
-
+import 'rxjs/add/operator/do';
+import 'rxjs/add/observable/of';
 
 export interface ISearchMetadata {
     completed_in: number;
@@ -76,6 +77,8 @@ export class TwitterService {
     private retrievedAccessToken: string = null;
     private nextPath: string = null;
 
+    private tweetsBasePath: string = 'https://api.twitter.com/1.1/search/tweets.json';
+
     constructor(public http: Http, private store: Store<any>) {
         const tweetsState = this.store.select((state) => state.tweets);
 
@@ -88,14 +91,13 @@ export class TwitterService {
         })
     }
 
-    search(phrase: string = '#javascript') {
+    search(phrase: string = '#javascript'): Observable<any> {
         this.store.dispatch({ type: RESET_TWEETS })
         this.store.dispatch({ type: FETCH_SEARCH_TWITTER });
-
-        const s = `https://api.twitter.com/1.1/search/tweets.json?q=${encodeURIComponent(phrase)}`;
-        return this.http.get(s, { headers: this.getHeadersWithAccessToken() })
+        const s = `${this.tweetsBasePath}?q=${encodeURIComponent(phrase)}`;
+        return this.issueToken().do(() => this.http.get(s, { headers: this.getHeadersWithAccessToken() })
             .map(res => res.json())
-            .map((data: ISearchResult) => this.dispatchSearchResultData(data, false));
+            .map((data: ISearchResult) => this.dispatchSearchResultData(data, false)).subscribe())
     }
 
     searchNext() {
@@ -106,14 +108,14 @@ export class TwitterService {
             });
         }
         this.store.dispatch({ type: FETCH_NEXT_TWEETS });
-        return this.http.get(`https://api.twitter.com/1.1/search/tweets.json${this.nextPath}`, {
+        return this.issueToken().do(() => this.http.get(`${this.tweetsBasePath}${this.nextPath}`, {
             headers: this.getHeadersWithAccessToken()
         })
             .map(res => res.json())
             .map((data: ISearchResult) => {
                 this.dispatchSearchResultData(data, true);
                 return data;
-            });
+            }).subscribe())
     }
 
     private getHeadersWithAccessToken() {
@@ -123,14 +125,16 @@ export class TwitterService {
         });
     }
 
-    issueToken() {
+    private issueToken() {
+        if (this.retrievedAccessToken) {
+            return Observable.of(this.retrievedAccessToken);
+        }
+
         const headers = new Headers({
             'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
             'Authorization': 'Basic ' + this.tokenCredentials
         });
-        return this.http.post('https://api.twitter.com/oauth2/token', 'grant_type=client_credentials', {
-            headers
-        })
+        return this.http.post('https://api.twitter.com/oauth2/token', 'grant_type=client_credentials', { headers })
             .map(res => res.json())
             .map(data => this.retrievedAccessToken = data.access_token);
     }
