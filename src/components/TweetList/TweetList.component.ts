@@ -23,7 +23,6 @@ export class TweetList implements OnInit, OnChanges {
 
     private targetTop: any;
 
-
     constructor(public navCtrl: NavController, public myElement: ElementRef) {
 
     }
@@ -43,25 +42,13 @@ export class TweetList implements OnInit, OnChanges {
         }
     }
 
+    showDetail(tweet: IStatus) {
+        this.navCtrl.push('TweetDetailPage', {
+            ...tweet
+        })
+    }
+
     private getOutersection(newList, oldList) {
         return newList.filter(tweet => !oldList.some(existingTweet => existingTweet.id === tweet.id))
     }
-
-    // private handleTweetsChange(tweetChange) {
-    //     if (!this._tweets.length) {
-    //         return this._tweets = tweetChange.currentValue;
-    //     }
-    //     // are there any new tweets which are not in the shown list?
-    //     const newTweetsList = this.getOutersection(tweetChange.currentValue, this._tweets)
-    //     // are there any new tweets which are not in the shown list and not in buffer?
-    //     const newTweetsBuffer = this.getOutersection(newTweetsList, this.tweetBuffer)
-
-    //     this.tweetBuffer = [...newTweetsBuffer, ...this.tweetBuffer]
-    // }
-
-
-    // public clearAllTweets(): void {
-    //     this._tweets = [];
-    //     this.tweetBuffer = [];
-    // }
 }
