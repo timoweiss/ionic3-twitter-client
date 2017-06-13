@@ -18,7 +18,7 @@ import { IStatus } from '../../services/twitter.service';
                 
                 <ion-item>
                     <ion-row *ngIf="isRetweet">
-                        <ion-note item-end style="text-align:right;">
+                        <ion-note item-end style="text-align:right;margin-left:0">
                             @{{parentTweet.user.screen_name}} has retweeted
                         </ion-note>
                     </ion-row>
@@ -34,7 +34,7 @@ import { IStatus } from '../../services/twitter.service';
                     <span [innerHTML]="selectedTweet.text | linky:{mention:'twitter', hashtag:'twitter' }"></span>
                 </ion-card-content>
 
-                <ion-row>
+                <ion-row align-items-center>
                     <ion-col>
                         <button ion-button icon-left clear small>
                             <ion-icon name="heart"></ion-icon>
@@ -47,9 +47,9 @@ import { IStatus } from '../../services/twitter.service';
                             <div>{{selectedTweet.retweet_count || 0}}</div>
                         </button>
                     </ion-col>
-                    <ion-col center text-center>
+                    <ion-col center text-center col-5 >
                         <ion-note item-end>
-                            {{selectedTweet.created_at | date}}
+                            {{selectedTweet.created_at | date:'medium'}}
                         </ion-note>
                     </ion-col>
                 </ion-row>
@@ -70,8 +70,5 @@ export class TweetDetailPage {
             this.isRetweet = true;
             this.parentTweet = navParams.data;
         }
-
-        console.log(this.selectedTweet.retweeted_status)
     }
-
 }
