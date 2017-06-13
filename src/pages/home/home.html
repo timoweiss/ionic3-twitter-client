@@ -2,7 +2,19 @@
   <ion-navbar>
     <ion-title>Tweets current search: {{searchTerm}}</ion-title>
   </ion-navbar>
-  <ion-searchbar #searchbar (ionInput)="searchFn($event)" debounce="300" animated=true></ion-searchbar>
+  <ion-row align-items-center>
+    <ion-col col-10 align-self-center>
+      <ion-searchbar (search)="searchFn($event)" #searchbar debounce="300" animated=true></ion-searchbar>
+    </ion-col>
+    <ion-col align-self-center>
+      <button ion-button icon-only (tap)="press($event)">
+              <ion-icon name="heart"></ion-icon>
+          </button>
+    </ion-col>
+
+  </ion-row>
+
+
 </ion-header>
 
 <ion-content>
@@ -11,7 +23,7 @@
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
 
-  <tweet-list [tweetsState]="tweetsState | async" [filter]="term" [searchOnline]></tweet-list>
+  <tweet-list [tweetsState]="tweetsState | async" [filter]="term" [searchOnline]=searchOnline></tweet-list>
 
   <ion-infinite-scroll (ionInfinite)="$event.waitFor(doInfinite())">
     <ion-infinite-scroll-content></ion-infinite-scroll-content>
