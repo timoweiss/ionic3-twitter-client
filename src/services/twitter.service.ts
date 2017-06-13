@@ -105,6 +105,7 @@ export class TwitterService {
                 sub.complete();
             });
         }
+        this.store.dispatch({ type: FETCH_NEXT_TWEETS });
         return this.http.get(`https://api.twitter.com/1.1/search/tweets.json${this.nextPath}`, {
             headers: this.getHeadersWithAccessToken()
         })
