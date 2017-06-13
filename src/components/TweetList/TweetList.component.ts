@@ -1,11 +1,12 @@
-import { Component, Input, OnInit, OnChanges, SimpleChange, ElementRef, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnInit, OnChanges, SimpleChange, ElementRef, ViewChild } from '@angular/core';
 import { NavController, Content } from 'ionic-angular';
 import { IStatus } from '../../services/twitter.service';
 import { TweetState } from '../../reducers/tweetsReducer';
 
 @Component({
     selector: 'tweet-list',
-    templateUrl: 'TweetList.html'
+    templateUrl: 'TweetList.html',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TweetList implements OnInit, OnChanges {
 
