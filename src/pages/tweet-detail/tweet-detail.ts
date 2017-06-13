@@ -9,7 +9,6 @@ import { IStatus } from '../../services/twitter.service';
 @IonicPage()
 @Component({
     selector: 'tweet-detail',
-    // templateUrl: 'tweet-detail.html',
     template: `
         <ion-header>
             <ion-navbar>
