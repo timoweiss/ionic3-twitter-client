@@ -1,5 +1,6 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { NavController, IonicPage } from 'ionic-angular';
+import { Component, OnInit, ViewChild, Renderer } from '@angular/core';
+import { NavController, IonicPage, Platform } from 'ionic-angular';
+import { SpeechRecognition } from '@ionic-native/speech-recognition';
 
 import { TwitterService } from '../../services/twitter.service';
 
@@ -7,7 +8,7 @@ import { Store } from '@ngrx/store';
 import { TweetState } from '../../reducers/tweetsReducer';
 import { Observable } from 'rxjs/Rx';
 import 'rxjs/add/operator/toPromise';
-
+import 'reflect-metadata';
 
 @IonicPage()
 @Component({
@@ -26,9 +27,32 @@ export class HomePage implements OnInit {
 
   private term: string = '';
 
-  constructor(public navCtrl: NavController, private twitterService: TwitterService, private store: Store<any>) {
+  private speechRecognitionAvailable: boolean;
+
+  constructor(
+    public navCtrl: NavController,
+    private twitterService: TwitterService,
+    private store: Store<any>,
+    private speechRecognition: SpeechRecognition,
+    private platform: Platform,
+    private renderer: Renderer,
+  ) {
     this.tweetsState = store.select(state => state.tweets);
     console.log('this.tweetsState', this.tweetsState)
+    this.platform.ready().then(() => {
+      if (platform.is('cordova')) {
+        this.speechRecognition.isRecognitionAvailable()
+          .then((available: boolean) => {
+            this.speechRecognitionAvailable = available;
+            console.log({ available })
+          })
+
+        this.speechRecognition.requestPermission()
+          .then(() => console.log('Granted'), () => console.log('Denied'))
+      }
+
+    })
+
   }
 
   ngOnInit() {
@@ -69,21 +93,24 @@ export class HomePage implements OnInit {
       .subscribe();
   }
 
-  public searchFn(input) {
+  private s(term: string) {
+    console.log('searchFn', this.term, { searchOnline: this.searchOnline });
+    if (this.searchOnline) {
+      if (this.term.length <= 3) {
+        return;
+      }
+      return this.searchTwitter(this.term);
+    }
+  }
 
-    this.term = input.target.value;
+  public searchFn(input) {
+    input.target ? this.renderer.invokeElementMethod(input.target, 'blur') : null;
+    this.term = this.searchbarInput.value;
 
     if (!this.term || !this.term.length) {
       return;
     }
-
-    console.log('searchFn', this.term, { searchOnline: this.searchOnline });
-    if (this.searchOnline) {
-      if (this.term.length <= 3) {
-
-      }
-      return this.searchTwitter(this.term);
-    }
+    this.s(this.term);
   }
 
   public toggleSearchOnline() {
@@ -123,5 +150,32 @@ export class HomePage implements OnInit {
       .subscribe(() => refresher.complete());
   }
 
+
+  private press(event) {
+    if (this.speechRecognitionAvailable) {
+      console.log('startListening')
+      this.speechRecognition.startListening()
+        .subscribe((matches: Array<string>) => {
+          if (matches.length) {
+            const firstMatch = this.replacer(matches[0]);
+            this.searchbarInput.value = firstMatch;
+            this.searchFn(firstMatch);
+          }
+          console.log({ matches });
+        },
+        (onerror) => console.log('error:', onerror)
+        );
+    }
+  }
+
+  private replacer(input: string) {
+    return input.toLowerCase()
+      .replace('hashtag ', '#')
+      .replace('hashtag', '#')
+      .replace('user ', '@')
+      .replace('user', '@')
+      .replace(' underscore ', '_')
+      .replace('underscore', '_');
+  }
 
 }
