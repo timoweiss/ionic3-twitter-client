@@ -104,6 +104,7 @@ export class HomePage implements OnInit {
   }
 
   public searchFn(input) {
+    // close keyboard if available
     input.target ? this.renderer.invokeElementMethod(input.target, 'blur') : null;
     this.term = this.searchbarInput.value;
 
@@ -175,7 +176,8 @@ export class HomePage implements OnInit {
       .replace('user ', '@')
       .replace('user', '@')
       .replace(' underscore ', '_')
-      .replace('underscore', '_');
+      .replace('underscore', '_')
+      .replace(/ß/g, 'ss');
   }
 
 }
