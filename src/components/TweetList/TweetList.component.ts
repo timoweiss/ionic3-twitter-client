@@ -1,7 +1,6 @@
 import { ChangeDetectionStrategy, Component, Input, OnInit, OnChanges, SimpleChange, ElementRef, ViewChild } from '@angular/core';
-import { NavController, Content } from 'ionic-angular';
+import { NavController } from 'ionic-angular';
 import { IStatus } from '../../services/twitter.service';
-import { TweetState } from '../../reducers/tweetsReducer';
 
 @Component({
     selector: 'tweet-list',
@@ -16,9 +15,11 @@ export class TweetList implements OnInit, OnChanges {
     private tweetsState: any;
 
     @Input()
+    // tslint:disable-next-line
     private filter: string;
 
     @Input()
+    // tslint:disable-next-line
     private searchOnline: boolean;
 
 
@@ -47,9 +48,5 @@ export class TweetList implements OnInit, OnChanges {
         this.navCtrl.push('TweetDetailPage', {
             ...tweet
         })
-    }
-
-    private getOutersection(newList, oldList) {
-        return newList.filter(tweet => !oldList.some(existingTweet => existingTweet.id === tweet.id))
     }
 }
