@@ -61,9 +61,7 @@ export class HomePage implements OnInit {
       this.searchTerm = tweetsState.searchTerm;
     })
 
-    this.twitterService
-      .issueToken()
-      .subscribe(() => this.fetchTweets())
+    this.fetchTweets();
   }
 
   fetchTweets(updateNextPath: boolean = true) {
