@@ -1,4 +1,6 @@
-<ion-spinner *ngIf="tweetsState.isFetching"></ion-spinner>
+<div *ngIf="tweetsState.isFetching" style="display:flex; justify-content: center; align-items: center; height: 100%;">
+    <ion-spinner></ion-spinner>
+</div>
 <ion-list>
     <ion-item *ngIf="!tweetsState.isFetching && !tweetsState.tweets.length">
         <h2>No tweets available!</h2>
