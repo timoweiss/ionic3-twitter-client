@@ -103,6 +103,7 @@ export type SearchResult = {
 export type TweetState = {
     tweets: Array<any>
     tweetsMeta: SearchMetadata
+    nextPath: string
     searchTerm: string
     receivedAt: number
     isFetching: boolean
