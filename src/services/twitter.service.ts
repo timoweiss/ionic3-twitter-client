@@ -91,7 +91,7 @@ export class TwitterService {
         })
     }
 
-    search(phrase: string = '#javascript'): Observable<any> {
+    public search(phrase: string = '#javascript'): Observable<any> {
         this.store.dispatch({ type: RESET_TWEETS })
         this.store.dispatch({ type: FETCH_SEARCH_TWITTER });
         const s = `${this.tweetsBasePath}?q=${encodeURIComponent(phrase)}`;
@@ -100,7 +100,7 @@ export class TwitterService {
             .map((data: ISearchResult) => this.dispatchSearchResultData(data, false)).subscribe())
     }
 
-    searchNext() {
+    public searchNext() {
         if (!this.nextPath) {
             console.warn('next path is not set!')
             return new Observable((sub) => {
@@ -139,7 +139,7 @@ export class TwitterService {
             .map(data => this.retrievedAccessToken = data.access_token);
     }
 
-    dispatchSearchResultData(result: ISearchResult, isLoadMore: boolean = false) {
+    private dispatchSearchResultData(result: ISearchResult, isLoadMore: boolean = false) {
         this.nextPath = result.search_metadata.next_results;
 
         return this.store.dispatch({
