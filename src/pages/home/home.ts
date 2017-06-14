@@ -28,6 +28,8 @@ export class HomePage implements OnInit {
 
   private term: string = '';
 
+  public sortBy: 'author' | 'date' = 'date';
+
   private speechRecognitionAvailable: boolean;
 
   constructor(
