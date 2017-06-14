@@ -7,7 +7,13 @@
     </button>
     </ion-buttons>
   </ion-navbar>
-
+  <ion-item>
+    <ion-label>sort tweets by:</ion-label>
+    <ion-select [(ngModel)]="sortBy">
+      <ion-option selected value="author">Author</ion-option>
+      <ion-option value="date">Date</ion-option>
+    </ion-select>
+  </ion-item>
   <ion-searchbar (search)="searchFn($event)" #searchbar debounce="300" animated=true></ion-searchbar>
 
 
@@ -15,12 +21,10 @@
 </ion-header>
 
 <ion-content>
-
   <ion-refresher (ionRefresh)="doRefresh($event)">
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
-
-  <tweet-list [tweetsState]="tweetsState | async" [filter]="term" [searchOnline]=searchOnline></tweet-list>
+  <tweet-list [tweetsState]="tweetsState | async" [sortBy]="sortBy" [filter]="term" [searchOnline]=searchOnline></tweet-list>
 
   <ion-infinite-scroll (ionInfinite)="$event.waitFor(doInfinite())">
     <ion-infinite-scroll-content></ion-infinite-scroll-content>
