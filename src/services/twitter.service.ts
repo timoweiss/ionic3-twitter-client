@@ -29,17 +29,18 @@ export class TwitterService {
     constructor(public http: Http, private store: Store<any>) {
         const tweetsState = this.store.select((state) => state.tweets);
 
-        // extract nextPath whenever something changed
+        // // extract nextPath whenever something changed
         tweetsState.subscribe((tweetsState: TweetState) => {
             if (tweetsState.tweetsMeta) {
-                this.nextPath = tweetsState.tweetsMeta.next_results;
+                this.nextPath = tweetsState.nextPath;
             }
 
         })
     }
 
     public search(phrase: string = '#javascript'): Observable<any> {
-        this.store.dispatch({ type: RESET_TWEETS })
+        console.log('new search triggered', { phrase });
+        this.store.dispatch({ type: RESET_TWEETS });
         this.store.dispatch({ type: FETCH_SEARCH_TWITTER });
         const s = `${this.tweetsBasePath}?q=${encodeURIComponent(phrase)}`;
         return this.issueToken().do(() => this.http.get(s, { headers: this.getHeadersWithAccessToken() })
@@ -47,22 +48,20 @@ export class TwitterService {
             .map((data: SearchResult) => this.dispatchSearchResultData(data, false)).subscribe())
     }
 
-    public searchNext() {
+    public searchNext(): Observable<any> {
         if (!this.nextPath) {
             console.warn('next path is not set!')
-            return new Observable((sub) => {
-                sub.complete();
-            });
+            return Observable.of(false);
         }
         this.store.dispatch({ type: FETCH_NEXT_TWEETS });
-        return this.issueToken().do(() => this.http.get(`${this.tweetsBasePath}${this.nextPath}`, {
+        return this.http.get(`${this.tweetsBasePath}${this.nextPath}`, {
             headers: this.getHeadersWithAccessToken()
         })
             .map(res => res.json())
             .map((data: SearchResult) => {
                 this.dispatchSearchResultData(data, true);
                 return data;
-            }).subscribe())
+            });
     }
 
     private getHeadersWithAccessToken() {
@@ -87,7 +86,7 @@ export class TwitterService {
     }
 
     private dispatchSearchResultData(result: SearchResult, isLoadMore: boolean = false) {
-        this.nextPath = result.search_metadata.next_results;
+        // this.nextPath = result.search_metadata.next_results;
 
         return this.store.dispatch({
             type: isLoadMore ? RECEIVE_NEXT_TWEETS : RECEIVE_SEARCH_TWITTER,
