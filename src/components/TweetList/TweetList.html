@@ -5,12 +5,12 @@
     <ion-item *ngIf="!tweetsState.isFetching && !tweetsState.tweets.length">
         <h2>No tweets available!</h2>
     </ion-item>
-    <ion-item *ngFor="let tweet of (tweetsState.tweets | search: filter:searchOnline)" (click)="showDetail(tweet)">
+    <button ion-item *ngFor="let tweet of (tweetsState.tweets | search: filter:searchOnline)" (click)="showDetail(tweet)">
         <ion-avatar item-start>
             <img src="{{tweet.user.profile_image_url_https}}">
         </ion-avatar>
         <h2>{{tweet.user.name}}</h2>
         <h3>{{ tweet.text }}</h3>
         <p><span *ngIf="tweet.retweet_count">RTs {{ tweet.retweet_count }}</span><span *ngIf="tweet.favorited">Favs {{ tweet.favorite_count }}</span></p>
-    </ion-item>
+    </button>
 </ion-list>
