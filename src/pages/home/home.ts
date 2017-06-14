@@ -3,6 +3,7 @@ import { NavController, IonicPage, Platform } from 'ionic-angular';
 import { SpeechRecognition } from '@ionic-native/speech-recognition';
 
 import { TwitterService } from '../../services/twitter.service';
+import { replacer } from '../../utils';
 
 import { Store } from '@ngrx/store';
 import { TweetState } from '../../types/tweets.types';
@@ -157,7 +158,7 @@ export class HomePage implements OnInit {
       this.speechRecognition.startListening()
         .subscribe((matches: Array<string>) => {
           if (matches.length) {
-            const firstMatch = this.replacer(matches[0]);
+            const firstMatch = replacer(matches[0]);
             this.searchbarInput.value = firstMatch;
             this.searchFn(firstMatch);
           }
@@ -168,15 +169,6 @@ export class HomePage implements OnInit {
     }
   }
 
-  private replacer(input: string) {
-    return input.toLowerCase()
-      .replace('hashtag ', '#')
-      .replace('hashtag', '#')
-      .replace('user ', '@')
-      .replace('user', '@')
-      .replace(' underscore ', '_')
-      .replace('underscore', '_')
-      .replace(/ß/g, 'ss');
-  }
+
 
 }
