@@ -1,6 +1,14 @@
-import { ChangeDetectionStrategy, Component, Input, OnInit, OnChanges, SimpleChange, ElementRef, ViewChild } from '@angular/core';
+import {
+    ChangeDetectionStrategy,
+    Component,
+    Input,
+    OnInit,
+    OnChanges,
+    SimpleChange,
+    ElementRef
+} from '@angular/core';
 import { NavController } from 'ionic-angular';
-import { IStatus } from '../../services/twitter.service';
+import { Status } from '../../services/twitter.service';
 
 @Component({
     selector: 'tweet-list',
@@ -44,7 +52,7 @@ export class TweetList implements OnInit, OnChanges {
         }
     }
 
-    showDetail(tweet: IStatus) {
+    showDetail(tweet: Status) {
         this.navCtrl.push('TweetDetailPage', {
             ...tweet
         })

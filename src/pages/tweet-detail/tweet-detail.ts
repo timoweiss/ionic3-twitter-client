@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { IonicPage } from 'ionic-angular';
 import { NavParams } from 'ionic-angular';
-import { IStatus } from '../../services/twitter.service';
+import { Status } from '../../services/twitter.service';
 
 @IonicPage()
 @Component({
@@ -59,8 +59,8 @@ import { IStatus } from '../../services/twitter.service';
 })
 export class TweetDetailPage {
 
-    private selectedTweet: IStatus = null;
-    private parentTweet: IStatus = null;
+    private selectedTweet: Status = null;
+    private parentTweet: Status = null;
     private isRetweet: boolean;
 
     constructor(public navParams: NavParams) {

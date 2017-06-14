@@ -13,7 +13,7 @@ import { SplashScreen } from '@ionic-native/splash-screen';
 import { TwitterService } from '../services/twitter.service';
 
 // Reducers
-import { tweetsReducer } from '../reducers/tweetsReducer';
+import { tweetsReducer } from '../reducers/tweets.reducer';
 
 @NgModule({
   declarations: [

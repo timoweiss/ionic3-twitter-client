@@ -3,12 +3,15 @@ import { Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
 import {
     TweetState,
+} from '../reducers/tweets.reducer'
+
+import {
     FETCH_SEARCH_TWITTER,
     RECEIVE_SEARCH_TWITTER,
     RESET_TWEETS,
     FETCH_NEXT_TWEETS,
     RECEIVE_NEXT_TWEETS,
-} from '../reducers/tweetsReducer'
+} from '../constants/tweets.actions';
 
 import { Http, Headers } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
@@ -16,7 +19,7 @@ import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/do';
 import 'rxjs/add/observable/of';
 
-export interface ISearchMetadata {
+export type SearchMetadata = {
     completed_in: number;
     count: number;
     max_id: number;
@@ -39,7 +42,7 @@ export interface ISearchMetadata {
 
 // retweeted_status
 // {created_at: "Thu Jun 08 13:45:42 +0000 2017", id: 872811877306433500, id_str: "872811877306433536",…}
-export interface IStatus {
+export type Status = {
     contributors?: any;
     coordinates?: any;
     created_at?: string
@@ -66,9 +69,9 @@ export interface IStatus {
     truncated?: boolean;
 }
 
-export interface ISearchResult {
-    search_metadata: ISearchMetadata;
-    statuses: Array<IStatus>;
+export type SearchResult = {
+    search_metadata: SearchMetadata;
+    statuses: Array<Status>;
 }
 
 @Injectable()
@@ -97,7 +100,7 @@ export class TwitterService {
         const s = `${this.tweetsBasePath}?q=${encodeURIComponent(phrase)}`;
         return this.issueToken().do(() => this.http.get(s, { headers: this.getHeadersWithAccessToken() })
             .map(res => res.json())
-            .map((data: ISearchResult) => this.dispatchSearchResultData(data, false)).subscribe())
+            .map((data: SearchResult) => this.dispatchSearchResultData(data, false)).subscribe())
     }
 
     public searchNext() {
@@ -112,7 +115,7 @@ export class TwitterService {
             headers: this.getHeadersWithAccessToken()
         })
             .map(res => res.json())
-            .map((data: ISearchResult) => {
+            .map((data: SearchResult) => {
                 this.dispatchSearchResultData(data, true);
                 return data;
             }).subscribe())
@@ -139,7 +142,7 @@ export class TwitterService {
             .map(data => this.retrievedAccessToken = data.access_token);
     }
 
-    private dispatchSearchResultData(result: ISearchResult, isLoadMore: boolean = false) {
+    private dispatchSearchResultData(result: SearchResult, isLoadMore: boolean = false) {
         this.nextPath = result.search_metadata.next_results;
 
         return this.store.dispatch({

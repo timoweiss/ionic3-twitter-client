@@ -5,7 +5,7 @@ import { SpeechRecognition } from '@ionic-native/speech-recognition';
 import { TwitterService } from '../../services/twitter.service';
 
 import { Store } from '@ngrx/store';
-import { TweetState } from '../../reducers/tweetsReducer';
+import { TweetState } from '../../reducers/tweets.reducer';
 import { Observable } from 'rxjs/Rx';
 import 'rxjs/add/operator/toPromise';
 import 'reflect-metadata';
