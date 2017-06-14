@@ -26,9 +26,11 @@ export class HomePage implements OnInit {
 
   private searchOnline: boolean = false;
 
+  selectedTweet: any;
+
   private term: string = '';
 
-  public sortBy: 'author' | 'date' = 'date';
+  public sortBy: 'none' | 'author' | 'date' = 'none';
 
   private speechRecognitionAvailable: boolean;
 
@@ -42,6 +44,10 @@ export class HomePage implements OnInit {
   ) {
     this.tweetsState = store.select(state => state.tweets);
     console.log('this.tweetsState', this.tweetsState)
+
+    this.tweetsState.subscribe(s => {
+      this.selectedTweet = s.tweets[0];
+    })
     this.platform.ready().then(() => {
       if (platform.is('cordova')) {
         this.speechRecognition.isRecognitionAvailable()
@@ -78,9 +84,10 @@ export class HomePage implements OnInit {
    * use arrow since fn is called from child-component (this binding)
    */
   loadMoreTweets = () => {
+
     return this.twitterService
       .searchNext(/*this.nextTweetsQueryPath*/)
-      .toPromise()
+      .toPromise();
   }
 
   /**
@@ -104,9 +111,15 @@ export class HomePage implements OnInit {
     }
   }
 
-  public searchFn(input) {
+  public onType(input) {
+    if (!this.searchOnline) {
+      this.searchFn(input, false);
+    }
+  }
+
+  public searchFn(input, closeKeyboard: boolean = true) {
     // close keyboard if available
-    input.target ? this.renderer.invokeElementMethod(input.target, 'blur') : null;
+    input.target && closeKeyboard ? this.renderer.invokeElementMethod(input.target, 'blur') : null;
     this.term = this.searchbarInput.value;
 
     if (!this.term || !this.term.length) {
@@ -132,13 +145,16 @@ export class HomePage implements OnInit {
    * infinit scroll callback fn
    */
   // tslint:disable-next-line
-  private doInfinite(): Promise<Array<any>> {
+  private doInfinite(infinit): Promise<Array<any>> {
     console.log('doInfinite')
+
     return this.loadMoreTweets()
       .then(result => {
-        console.log('result from infinit received')
-        return result;
-      })
+        if (!result) {
+          return infinit.enable(false);
+        }
+      });
+
   }
 
   /**

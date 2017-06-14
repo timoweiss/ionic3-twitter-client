@@ -33,7 +33,7 @@ export class TweetList implements OnInit, OnChanges {
 
     @Input()
     // tslint:disable-next-line
-    private sortBy: 'date' | 'author';
+    private sortBy: 'none' | 'date' | 'author';
 
 
     private targetTop: any;

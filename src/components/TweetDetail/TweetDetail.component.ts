@@ -30,7 +30,7 @@ import { Status } from '../../types/tweets.types';
             </ion-item>
 
             <ion-card-content>
-                <span [innerHTML]="selectedTweet.text "></span>
+                <span [innerHTML]="selectedTweet.text | linky:{mention:'twitter', hashtag:'twitter' }"></span>
             </ion-card-content>
 
             <ion-row align-items-center>
