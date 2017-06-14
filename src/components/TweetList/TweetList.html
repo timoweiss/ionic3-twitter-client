@@ -3,9 +3,10 @@
 </div>
 <ion-list>
     <ion-item *ngIf="!tweetsState.isFetching && !tweetsState.tweets.length">
-        <h2>No tweets available!</h2>
+        <h2>No tweets for your search criteria!</h2>
     </ion-item>
-    <button ion-item *ngFor="let tweet of (tweetsState.tweets | search: filter:searchOnline)" (click)="showDetail(tweet)">
+
+    <button ion-item *ngFor="let tweet of (tweetsState.tweets | search: filter:searchOnline) | sorttweets:sortBy" (click)="showDetail(tweet)">
         <ion-avatar item-start>
             <img src="{{tweet.user.profile_image_url_https}}">
         </ion-avatar>

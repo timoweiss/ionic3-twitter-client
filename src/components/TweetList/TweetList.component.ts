@@ -31,6 +31,11 @@ export class TweetList implements OnInit, OnChanges {
     private searchOnline: boolean;
 
 
+    @Input()
+    // tslint:disable-next-line
+    private sortBy: 'date' | 'author';
+
+
     private targetTop: any;
 
     constructor(public navCtrl: NavController, public myElement: ElementRef) {
