@@ -14,15 +14,18 @@ export class SorttweetsPipe implements PipeTransform {
   /**
    * Takes a value and makes it lowercase.
    */
-  transform(value: Array<Status>, sortBy: 'date' | 'author' = 'date') {
+  transform(value: Array<Status>, sortBy: 'none' | 'date' | 'author' = 'none') {
+    console.log('sorting')
     return value.sort((a, b) => {
-      if (sortBy === 'date') {
-        return new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
+      if (sortBy === 'none') {
+        return b.id - a.id;
+      } else if (sortBy === 'date') {
+        return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
       } else if (sortBy === 'author') {
         if (a.user.name < b.user.name) return -1;
         if (a.user.name > b.user.name) return 1;
         return 0;
       }
-    })
+    }).map(e => e);
   }
 }
