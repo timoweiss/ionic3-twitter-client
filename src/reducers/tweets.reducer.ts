@@ -1,15 +1,8 @@
 import { Action } from '@ngrx/store';
 
-import { SearchMetadata } from '../services/twitter.service';
 import * as Actions from '../constants/tweets.actions';
 
-export type TweetState = {
-    tweets: Array<any>
-    tweetsMeta: SearchMetadata
-    searchTerm: string
-    receivedAt: number
-    isFetching: boolean
-}
+import { TweetState } from '../types/tweets.types';
 
 const initialState: TweetState = {
     tweets: [],
@@ -19,7 +12,7 @@ const initialState: TweetState = {
     isFetching: false,
 }
 
-export function tweetsReducer(state = initialState, action: Action) {
+export function tweetsReducer(state: TweetState = initialState, action: Action) {
     switch (action.type) {
         case Actions.FETCH_SEARCH_TWITTER:
             return { ...state, isFetching: true };

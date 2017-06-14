@@ -8,7 +8,7 @@ import {
     ElementRef
 } from '@angular/core';
 import { NavController } from 'ionic-angular';
-import { Status } from '../../services/twitter.service';
+import { Status } from '../../types/tweets.types';
 
 @Component({
     selector: 'tweet-list',

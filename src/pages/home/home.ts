@@ -5,7 +5,7 @@ import { SpeechRecognition } from '@ionic-native/speech-recognition';
 import { TwitterService } from '../../services/twitter.service';
 
 import { Store } from '@ngrx/store';
-import { TweetState } from '../../reducers/tweets.reducer';
+import { TweetState } from '../../types/tweets.types';
 import { Observable } from 'rxjs/Rx';
 import 'rxjs/add/operator/toPromise';
 import 'reflect-metadata';
@@ -150,7 +150,8 @@ export class HomePage implements OnInit {
   }
 
 
-  private press(event) {
+  // tslint:disable-next-line
+  private recognizeSpeech(event) {
     if (this.speechRecognitionAvailable) {
       console.log('startListening')
       this.speechRecognition.startListening()

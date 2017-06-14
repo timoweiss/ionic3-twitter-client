@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { IonicPage } from 'ionic-angular';
 import { NavParams } from 'ionic-angular';
-import { Status } from '../../services/twitter.service';
+import { Status } from '../../types/tweets.types';
 
 @IonicPage()
 @Component({
