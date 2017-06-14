@@ -7,6 +7,7 @@ import { TweetState } from '../types/tweets.types';
 const initialState: TweetState = {
     tweets: [],
     tweetsMeta: null,
+    nextPath: null,
     searchTerm: '#javascript',
     receivedAt: 0,
     isFetching: false,
@@ -22,6 +23,7 @@ export function tweetsReducer(state: TweetState = initialState, action: Action) 
                 ...state,
                 tweets: action.payload.tweets,
                 tweetsMeta: action.payload.tweetsMeta,
+                nextPath: action.payload.tweetsMeta.next_results,
                 searchTerm: decodeURIComponent(action.payload.tweetsMeta.query),
                 isFetching: false,
             };
@@ -38,6 +40,8 @@ export function tweetsReducer(state: TweetState = initialState, action: Action) 
             return {
                 ...state,
                 tweets: [...state.tweets, ...action.payload.tweets],
+                tweetsMeta: action.payload.tweetsMeta,
+                nextPath: action.payload.tweetsMeta.next_results,
                 isFetching: false,
             }
         }
