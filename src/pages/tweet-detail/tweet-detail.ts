@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { IonicPage } from 'ionic-angular';
-import { NavParams } from 'ionic-angular';
+import { NavParams, Nav } from 'ionic-angular';
 import { Status } from '../../types/tweets.types';
 
 @IonicPage()
@@ -24,12 +24,19 @@ export class TweetDetailPage {
     private parentTweet: Status = null;
     private isRetweet: boolean;
 
-    constructor(public navParams: NavParams) {
+    constructor(public navParams: NavParams, private nav: Nav) {
         this.selectedTweet = navParams.data.retweeted_status ? navParams.data.retweeted_status : navParams.data;
 
         if (navParams.data.retweeted_status) {
             this.isRetweet = true;
             this.parentTweet = navParams.data;
         }
+    }
+
+    ionViewWillEnter() {
+        this.nav.swipeBackEnabled = false;
+    }
+    ionViewWillLeave() {
+        this.nav.swipeBackEnabled = true;
     }
 }
