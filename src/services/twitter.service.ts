@@ -20,7 +20,8 @@ import { SearchResult, TweetState } from '../types/tweets.types';
 
 @Injectable()
 export class TwitterService {
-    private tokenCredentials = window.btoa('DPveMwOJTKECiF7G5bRqbpozv' + ':' + '0Xu0RHy68SLpWgd9kdsaLijIYFiQDNysAQfPTTkJMyGPkjapzD')
+    private tokenCredentials = window.btoa(TWITTER_APP + ':' + TWITTER_SECRET);
+
     private retrievedAccessToken: string = null;
     private nextPath: string = null;
 
