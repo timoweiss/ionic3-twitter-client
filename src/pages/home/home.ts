@@ -26,8 +26,6 @@ export class HomePage implements OnInit {
 
   private searchOnline: boolean = false;
 
-  selectedTweet: any;
-
   private term: string = '';
 
   public sortBy: 'none' | 'author' | 'date' = 'none';
@@ -43,11 +41,7 @@ export class HomePage implements OnInit {
     private renderer: Renderer,
   ) {
     this.tweetsState = store.select(state => state.tweets);
-    console.log('this.tweetsState', this.tweetsState)
 
-    this.tweetsState.subscribe(s => {
-      this.selectedTweet = s.tweets[0];
-    })
     this.platform.ready().then(() => {
       if (platform.is('cordova')) {
         this.speechRecognition.isRecognitionAvailable()
