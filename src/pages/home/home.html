@@ -7,16 +7,20 @@
     </button>
     </ion-buttons>
   </ion-navbar>
-  <ion-item>
-    <ion-label>sort tweets by:</ion-label>
-    <ion-select [(ngModel)]="sortBy">
-      <ion-option value="none">None</ion-option>
-      <ion-option value="author">Author</ion-option>
-      <ion-option value="date">Date</ion-option>
 
-    </ion-select>
-  </ion-item>
-  <ion-searchbar (search)="searchFn($event)" (ionInput)="onType($event)" #searchbar debounce="300" animated=true></ion-searchbar>
+  <ion-toolbar>
+    <ion-item>
+      <ion-label>sort tweets by:</ion-label>
+      <ion-select [(ngModel)]="sortBy">
+        <ion-option value="none">None</ion-option>
+        <ion-option value="author">Author</ion-option>
+        <ion-option value="date">Date</ion-option>
+
+      </ion-select>
+    </ion-item>
+    <ion-searchbar (search)="searchFn($event)" (ionInput)="onType($event)" #searchbar debounce="300" animated=true></ion-searchbar>
+  </ion-toolbar>
+
 </ion-header>
 
 <ion-content>
