@@ -12,9 +12,6 @@ import { Status } from '../../types/tweets.types';
             Please provide a tweet
         </ion-item>
          <ion-card *ngIf="selectedTweet">
-
-            
-        
             <ion-item >
                 <ion-row *ngIf="isRetweet">
                     <ion-note item-end style="text-align:right;margin-left:0">
@@ -30,7 +27,7 @@ import { Status } from '../../types/tweets.types';
             </ion-item>
 
             <ion-card-content>
-                <span [innerHTML]="selectedTweet.text | linky:{mention:'twitter', hashtag:'twitter' }"></span>
+                <inappopener [linkedContent]="selectedTweet.text | linky:{mention:'twitter', hashtag:'twitter' }"></inappopener>
             </ion-card-content>
 
             <ion-row align-items-center>
@@ -66,8 +63,5 @@ export class TweetDetail {
     @Input()
     isRetweet: boolean;
 
-
-    constructor(public myElement: ElementRef) {
-
-    }
+    constructor(public myElement: ElementRef) { }
 }
