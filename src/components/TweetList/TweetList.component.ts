@@ -44,8 +44,6 @@ export class TweetList implements OnInit, OnChanges {
 
     ngOnInit() {
         this.targetTop = this.myElement.nativeElement;
-
-        setInterval(() => console.log(this.tweetsState), 10000)
     }
 
 
