@@ -15,7 +15,9 @@ export class SearchPipe implements PipeTransform {
     if (!searchterm || ignore) {
       return tweets;
     }
-    const filtered = tweets.filter(tweet => tweet.text.toLowerCase().includes(searchterm));
+    const lowerSearchTerm = searchterm.toLowerCase();
+    const filtered = tweets
+      .filter(tweet => tweet.text.toLowerCase().includes(lowerSearchTerm));
 
     return filtered
 
